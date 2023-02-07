@@ -16,6 +16,7 @@ provider "aws" {
 resource "aws_instance" "app_server" {
   ami           = "ami-06c39ed6b42908a36"
   instance_type = "t2.micro"
+  key_name = "aws-terraform"
 
   tags = {
     Name = "grafana"
