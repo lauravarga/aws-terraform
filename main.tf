@@ -18,7 +18,7 @@ resource "aws_vpc" "grafana-vpc" {
 resource "aws_subnet" "grafana-subnet" {
   cidr_block = "${cidrsubnet(aws_vpc.grafana-vpc.cidr_block, 3, 1)}"
   vpc_id = "${aws_vpc.grafana-vpc.id}"
-  availability_zone = "eu-central-1"
+  availability_zone = "eu-central-1a"
 }
 
 resource "aws_security_group" "grafana-security-group" {
