@@ -13,9 +13,6 @@ resource "aws_vpc" "grafana-vpc" {
   cidr_block = "10.0.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support = true
-  tags {
-    Name = "grafana-vpc"
-  }
 }
 
 resource "aws_subnet" "grafana-subnet" {
@@ -53,8 +50,8 @@ resource "aws_instance" "app_server" {
   instance_type = "t2.micro"
   key_name = "aws-terraform"
   security_groups = ["${aws_security_group.grafana-security-group.id}"]
+  subnet_id = "${aws_subnet.grafana-subnet.id}"
   tags = {
     Name = "grafana"
   }
-  subnet_id = "${aws_subnet.grafana-subnet.id}"
 }
