@@ -22,14 +22,6 @@ resource "aws_vpc" "grafana-vpc" {
   }
 }
 
-resource "aws_eip" "grafana-public-ip" {
-  instance   = aws_instance.grafana-ec2.id
-  depends_on = [aws_internet_gateway.grafana-igw]
-  vpc        = true
-  tags = {
-    Name = "grafana-public-ip"
-  }
-}
 resource "aws_subnet" "grafana-subnet-public" {
   cidr_block        = "10.0.0.0/24"
   vpc_id            = aws_vpc.grafana-vpc.id
