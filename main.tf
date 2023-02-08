@@ -44,14 +44,14 @@ resource "aws_subnet" "grafana-subnet-private" {
   }
 }
 
-resource "aws_nat_gateway" "grafana-nat-gw" {
-  subnet_id     = aws_subnet.grafana-subnet-public.id
-  allocation_id = aws_eip.grafana-public-ip.id
+# resource "aws_nat_gateway" "grafana-nat-gw" {
+#   subnet_id     = aws_subnet.grafana-subnet-public.id
+#   allocation_id = aws_eip.grafana-public-ip.id
 
-  tags = {
-    Name = "grafana-nat-gw"
-  }
-}
+#   tags = {
+#     Name = "grafana-nat-gw"
+#   }
+# }
 
 
 resource "aws_route_table" "grafana-route-table" {
