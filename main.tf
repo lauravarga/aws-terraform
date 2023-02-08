@@ -45,7 +45,7 @@ resource "aws_subnet" "grafana-subnet-private" {
 }
 
 resource "aws_nat_gateway" "grafana-nat-gw" {
-  subnet_id     = aws_subnet.grafana-subnet-public
+  subnet_id     = aws_subnet.grafana-subnet-public.id
   allocation_id = aws_eip.grafana-public-ip.id
 
   tags = {
@@ -65,12 +65,12 @@ resource "aws_route_table" "grafana-route-table" {
   }
 }
 resource "aws_route_table_association" "grafana-subnet-association-public" {
-  subnet_id      = aws_subnet.grafana-subnet-public
-  route_table_id = aws_vpc.grafana-vpc
+  subnet_id      = aws_subnet.grafana-subnet-public.id
+  route_table_id = aws_vpc.grafana-vpc.id
 }
 resource "aws_route_table_association" "grafana-subnet-association-private" {
-  subnet_id      = aws_subnet.grafana-subnet-private
-  route_table_id = aws_route_table.grafana-route-table
+  subnet_id      = aws_subnet.grafana-subnet-private.id
+  route_table_id = aws_route_table.grafana-route-table.id
 }
 
 resource "aws_security_group" "grafana-security-group" {
