@@ -8,14 +8,15 @@ resource "aws_instance" "grafana-ec2" {
   key_name        = "aws-terraform"
   security_groups = ["sg-009f63dbcb79bf7fd"]
   subnet_id       = "subnet-0763649b34226ba35"
+  user_data       = file("user-data.sh")
   tags = {
     Name = "grafana"
   }
 }
 
 resource "aws_eip" "grafana-public-ip" {
-  instance   = aws_instance.grafana-ec2.id
-  vpc        = true
+  instance = aws_instance.grafana-ec2.id
+  vpc      = true
   tags = {
     Name = "grafana-public-ip"
   }
