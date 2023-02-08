@@ -27,7 +27,7 @@ resource "aws_eip" "grafana-public-ip" {
   }
 }
 resource "aws_subnet" "grafana-subnet-public" {
-  cidr_block        = cidrsubnet(aws_vpc.grafana-vpc.cidr_block, 3, 1)
+  cidr_block        = "10.0.0.0/24"
   vpc_id            = aws_vpc.grafana-vpc.id
   availability_zone = "eu-central-1a"
   tags = {
@@ -36,7 +36,7 @@ resource "aws_subnet" "grafana-subnet-public" {
 }
 
 resource "aws_subnet" "grafana-subnet-private" {
-  cidr_block        = cidrsubnet(aws_vpc.grafana-vpc.cidr_block, 3, 1)
+  cidr_block        = "10.0.99.0/24"
   vpc_id            = aws_vpc.grafana-vpc.id
   availability_zone = "eu-central-1a"
   tags = {
