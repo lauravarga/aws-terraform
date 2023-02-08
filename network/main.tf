@@ -60,7 +60,7 @@ resource "aws_route_table_association" "grafana-subnet-association-private" {
 }
 
 resource "aws_security_group" "grafana-security-group" {
-  name   = "allow-all-sg"
+  name   = "grafana-security-group"
   vpc_id = aws_vpc.grafana-vpc.id
   ingress {
     cidr_blocks = [
@@ -69,7 +69,19 @@ resource "aws_security_group" "grafana-security-group" {
     from_port = 22
     to_port   = 22
     protocol  = "tcp"
+    description = "allow ssh port"
   }
+
+  ingress {
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
+    from_port   = 0
+    to_port     = 3000
+    protocol    = "tcp"
+    description = "allow grafana port"
+  }
+
 
   egress {
     from_port   = 0
