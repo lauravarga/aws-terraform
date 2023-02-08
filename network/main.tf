@@ -1,3 +1,7 @@
+provider "aws" {
+  region = "eu-central-1"
+}
+
 terraform {
   required_providers {
     aws = {
@@ -43,16 +47,6 @@ resource "aws_subnet" "grafana-subnet-private" {
     Name = "grafana-subnet-private"
   }
 }
-
-# resource "aws_nat_gateway" "grafana-nat-gw" {
-#   subnet_id     = aws_subnet.grafana-subnet-public.id
-#   allocation_id = aws_eip.grafana-public-ip.id
-
-#   tags = {
-#     Name = "grafana-nat-gw"
-#   }
-# }
-
 
 resource "aws_route_table" "grafana-route-table" {
   vpc_id = aws_vpc.grafana-vpc.id
@@ -107,17 +101,4 @@ resource "aws_route" "route-public" {
   gateway_id             = aws_internet_gateway.grafana-igw.id
 }
 
-provider "aws" {
-  region = "eu-central-1"
-}
 
-resource "aws_instance" "grafana-ec2" {
-  ami             = "ami-06c39ed6b42908a36"
-  instance_type   = "t2.micro"
-  key_name        = "aws-terraform"
-  security_groups = ["${aws_security_group.grafana-security-group.id}"]
-  subnet_id       = aws_subnet.grafana-subnet-public.id
-  tags = {
-    Name = "grafana"
-  }
-}
