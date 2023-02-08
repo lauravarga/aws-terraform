@@ -66,7 +66,7 @@ resource "aws_route_table" "grafana-route-table" {
 }
 resource "aws_route_table_association" "grafana-subnet-association-public" {
   subnet_id      = aws_subnet.grafana-subnet-public.id
-  route_table_id = aws_vpc.grafana-vpc.id
+  route_table_id = aws_vpc.grafana-vpc.main_route_table_id
 }
 resource "aws_route_table_association" "grafana-subnet-association-private" {
   subnet_id      = aws_subnet.grafana-subnet-private.id
