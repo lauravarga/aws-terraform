@@ -116,7 +116,7 @@ resource "aws_instance" "grafana-ec2" {
   instance_type   = "t2.micro"
   key_name        = "aws-terraform"
   security_groups = ["${aws_security_group.grafana-security-group.id}"]
-  subnet_id       = aws_subnet.grafana-subnet-private.id
+  subnet_id       = aws_subnet.grafana-subnet-public.id
   tags = {
     Name = "grafana"
   }
