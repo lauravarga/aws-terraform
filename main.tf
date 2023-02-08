@@ -19,7 +19,7 @@ resource "aws_vpc" "grafana-vpc" {
 }
 
 resource "aws_eip" "grafana-public-ip" {
-  #   instance = aws_instance.grafana-ec2.id
+  instance   = aws_instance.grafana-ec2.id
   depends_on = [aws_internet_gateway.grafana-igw]
   vpc        = true
   tags = {
