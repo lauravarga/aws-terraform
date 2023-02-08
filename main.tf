@@ -13,27 +13,63 @@ resource "aws_vpc" "grafana-vpc" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
   enable_dns_support   = true
+  tags = {
+    Name = "grafana-vpc"
+  }
 }
 
 resource "aws_eip" "grafana-public-ip" {
-  instance = aws_instance.grafana-ec2.id
-  vpc      = true
+  #   instance = aws_instance.grafana-ec2.id
+  depends_on = [aws_internet_gateway.grafana-igw]
+  vpc        = true
+  tags = {
+    Name = "grafana-public-ip"
+  }
 }
-resource "aws_subnet" "grafana-subnet" {
+resource "aws_subnet" "grafana-subnet-public" {
   cidr_block        = cidrsubnet(aws_vpc.grafana-vpc.cidr_block, 3, 1)
   vpc_id            = aws_vpc.grafana-vpc.id
   availability_zone = "eu-central-1a"
+  tags = {
+    Name = "grafana-subnet-public"
+  }
 }
+
+resource "aws_subnet" "grafana-subnet-private" {
+  cidr_block        = cidrsubnet(aws_vpc.grafana-vpc.cidr_block, 3, 1)
+  vpc_id            = aws_vpc.grafana-vpc.id
+  availability_zone = "eu-central-1a"
+  tags = {
+    Name = "grafana-subnet-private"
+  }
+}
+
+resource "aws_nat_gateway" "grafana-nat-gw" {
+  subnet_id     = aws_subnet.grafana-subnet-public.id
+  allocation_id = aws_eip.grafana-public-ip.id
+
+  tags = {
+    Name = "grafana-nat-gw"
+  }
+}
+
 
 resource "aws_route_table" "grafana-route-table" {
   vpc_id = aws_vpc.grafana-vpc.id
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.grafana-gw.id
+    gateway_id = aws_internet_gateway.grafana-igw.id
+  }
+  tags = {
+    Name = "grafana-route-table"
   }
 }
-resource "aws_route_table_association" "grafana-subnet-association" {
-  subnet_id      = aws_subnet.grafana-subnet.id
+resource "aws_route_table_association" "grafana-subnet-association-public" {
+  subnet_id      = aws_subnet.grafana-subnet-public.id
+  route_table_id = aws_vpc.grafana-vpc.id
+}
+resource "aws_route_table_association" "grafana-subnet-association-private" {
+  subnet_id      = aws_subnet.grafana-subnet-private.id
   route_table_id = aws_route_table.grafana-route-table.id
 }
 
@@ -57,8 +93,18 @@ resource "aws_security_group" "grafana-security-group" {
   }
 }
 
-resource "aws_internet_gateway" "grafana-gw" {
+resource "aws_internet_gateway" "grafana-igw" {
   vpc_id = aws_vpc.grafana-vpc.id
+  tags = {
+    Name = "grafana-igw"
+  }
+
+}
+
+resource "aws_route" "route-public" {
+  route_table_id         = aws_vpc.grafana-vpc.main_route_table_id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.grafana-igw.id
 }
 
 provider "aws" {
@@ -70,7 +116,7 @@ resource "aws_instance" "grafana-ec2" {
   instance_type   = "t2.micro"
   key_name        = "aws-terraform"
   security_groups = ["${aws_security_group.grafana-security-group.id}"]
-  subnet_id       = aws_subnet.grafana-subnet.id
+  subnet_id       = aws_subnet.grafana-subnet-private.id
   tags = {
     Name = "grafana"
   }
