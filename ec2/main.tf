@@ -7,7 +7,7 @@ resource "aws_instance" "grafana-ec2" {
   instance_type   = "t2.micro"
   key_name        = "aws-terraform"
   vpc_security_group_ids = ["sg-05261568eaf00213f"]
-  subnet_id       = "subnet-0763649b34226ba35"
+  subnet_id       = "subnet-00805f5ec7788f925"
   user_data       = file("user-data.sh")
   tags = {
     Name = "grafana"
